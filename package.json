@@ -1,0 +1,33 @@
+{
+  "name": "mssql-query-builder",
+  "version": "1.0.0",
+  "description": "Dynamically build Microsoft SQL Server queries using JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc index.ts --target es6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlesStover/mssql-query-builder.git"
+  },
+  "keywords": [
+    "node",
+    "nodejs",
+    "sql",
+    "sql",
+    "server"
+  ],
+  "author": "Charles Stover",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CharlesStover/mssql-query-builder/issues"
+  },
+  "homepage": "https://github.com/CharlesStover/mssql-query-builder#readme",
+  "devDependencies": {
+    "@types/mssql": "^4.0.8",
+    "@types/node": "^10.5.2",
+    "mssql": "^4.1.0",
+    "typescript": "^2.9.2"
+  }
+}
