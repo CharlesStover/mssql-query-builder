@@ -16,7 +16,8 @@ const clauses = (...c: string[]): string => {
   return c.map((a: string): string => '(?:(?:^| )?' + a + ')?').join('');
 };
 
-export default class QueryBuilder extends EventEmitter {
+class QueryBuilder extends EventEmitter {
+  public static default: typeof QueryBuilder = QueryBuilder;
   private _all: boolean;
   private _fetch: number;
   private _from: null | string;
@@ -735,3 +736,5 @@ export default class QueryBuilder extends EventEmitter {
     return '';
   }
 }
+
+module.exports = QueryBuilder;
