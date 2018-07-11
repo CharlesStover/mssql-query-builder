@@ -1,3 +1,9 @@
+![GitHub version](https://img.shields.io/github/package-json/v/CharlesStover/mssql-query-builder.svg)
+![npm version](https://img.shields.io/npm/v/mssql-query-builder.svg)
+![npm downloads](https://img.shields.io/npm/dt/mssql-query-builder.svg)
+![min](https://img.shields.io/bundlephobia/min/mssql-query-builder.svg)
+![minzip](https://img.shields.io/bundlephobia/minzip/mssql-query-builder.svg)
+
 # mssql-query-builder
 Dynamically build Microsoft SQL Server queries using JavaScript.
 
@@ -73,7 +79,7 @@ Specifies the tables from which to retrieve rows.
 ### groupBy(column: string)
 Specifies the groups (equivalence classes) that output rows are to be placed in.
 
-If aggregate functions are included in the SELECT clause <select list>, the GROUP BY clause calculates a summary value for each group.
+If aggregate functions are included in the SELECT clause's select list, the GROUP BY clause calculates a summary value for each group.
 
 ### input(value: Input, name: string, type: ISqlTypeFactoryWithNoParams)
 Inputs a SQL variable.
