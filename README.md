@@ -1,14 +1,15 @@
+# mssql-query-builder
+Dynamically build Microsoft SQL Server queries using JavaScript.
+
 ![GitHub version](https://img.shields.io/github/package-json/v/CharlesStover/mssql-query-builder.svg)
 ![npm version](https://img.shields.io/npm/v/mssql-query-builder.svg)
 ![npm downloads](https://img.shields.io/npm/dt/mssql-query-builder.svg)
 ![min](https://img.shields.io/bundlephobia/min/mssql-query-builder.svg)
 ![minzip](https://img.shields.io/bundlephobia/minzip/mssql-query-builder.svg)
 
-# mssql-query-builder
-Dynamically build Microsoft SQL Server queries using JavaScript.
-
 ## Install
-`npm install mssql-query-builder --save` or `yarn add mssql-query-builder`
+* `npm install mssql-query-builder --save` or
+* `yarn add mssql-query-builder`
 
 ## Use
 Note: All methods can be chained together. Each method call returns the original QueryBuilder instance.
