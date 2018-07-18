@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { Bit, config, DateTime, Int, IResult, ISqlTypeFactoryWithNoParams, NVarChar, Request, VarBinary } from 'mssql';
-import isOrderByClause from './is-order-by-clause';
+import isOrderByClause from './isOrderByClause';
 import { sqlRequest } from './sql';
 
 export type Input = boolean | number | string | Buffer | Date;

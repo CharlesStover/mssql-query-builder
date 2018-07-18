@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    ".vscode": true,
+    "node_modules": true,
+    "index.js": true,
+    "isOrderByClause.js": true,
+    "sql.js": true
+  }
+}

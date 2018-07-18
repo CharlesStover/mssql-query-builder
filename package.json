@@ -1,11 +1,11 @@
 {
   "name": "mssql-query-builder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Dynamically build Microsoft SQL Server queries using JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js",
-    "tsc": "tsc index.ts --downlevelIteration --lib ES2015 --target es5"
+    "build": "tsc ./src/index.ts --downlevelIteration --lib ES2015 --target es5",
+    "test": "npm run tsc && node tests/index.spec.js"
   },
   "repository": {
     "type": "git",
