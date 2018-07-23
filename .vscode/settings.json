@@ -2,7 +2,7 @@
   "files.exclude": {
     ".vscode": true,
     "node_modules": true,
-    "index.d.ts",
+    "index.d.ts": true,
     "index.js": true,
     "isOrderByClause.d.ts": true,
     "isOrderByClause.js": true,
