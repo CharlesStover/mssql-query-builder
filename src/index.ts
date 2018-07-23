@@ -3,6 +3,8 @@ import { Bit, config, DateTime, Int, IResult, ISqlTypeFactoryWithNoParams, NVarC
 import isOrderByClause from './isOrderByClause';
 import { sqlRequest } from './sql';
 
+type Alias = { [alias: string]: string };
+
 export type Input = boolean | number | string | Buffer | Date;
 
 export interface OrderBy {
@@ -11,6 +13,8 @@ export interface OrderBy {
 }
 
 export type RecordSet<Obj extends object = { [key: string]: number | string }, Result = any> = number | ((recordset: Obj[]) => Result);
+
+type SelectParameter = Alias | string;
 
 const clauses = (...c: string[]): string => {
   return c.map((a: string): string => '(?:(?:^| )?' + a + ')?').join('');
@@ -375,17 +379,18 @@ class QueryBuilder extends EventEmitter {
     q = q.replace(/[\n\r\s\t]+/g, ' ');
     const query: null | RegExpMatchArray = q.match(new RegExp(
       clauses(
-        'SELECT(?: (ALL|DISTINCT))?(?: TOP (\d+))? (.+?)',
+        'SELECT(?: (ALL|DISTINCT))?(?: TOP (\\d+))? (.+?)',
         'FROM (.+?)',
         'WHERE (.+?)',
         'ORDER BY (.+?)',
-        'OFFSET (\d+) ROWS?(?: FETCH (?:FIRST|NEXT) (\d+) ROWS? ONLY)?'
+        'OFFSET (\\d+) ROWS?(?: FETCH (?:FIRST|NEXT) (\\d+) ROWS? ONLY)?'
       ) +
       ' ?\;? ?$'
     ));
     if (query) {
-      if (query[3]) {
-        switch (query[1]) {
+      const [ , all, top, select, from, where, orderBy, offset, fetch ] = query;
+      if (select) {
+        switch (all) {
           case 'ALL':
             this.all();
             break;
@@ -393,24 +398,24 @@ class QueryBuilder extends EventEmitter {
             this.distinct();
             break;
         }
-        if (query[2]) {
-          this.top(parseInt(query[2], 10));
+        if (top) {
+          this.top(parseInt(top, 10));
         }
-        this.select(query[3]);
+        this.select(select);
       }
-      if (query[4]) {
-        this.from(query[4]);
+      if (from) {
+        this.from(from);
       }
-      if (query[5]) {
-        this.where(query[5]);
+      if (where) {
+        this.where(where);
       }
-      if (query[6]) {
-        this.orderBy(query[6]);
+      if (orderBy) {
+        this.orderBy(orderBy);
       }
-      if (query[7]) {
-        this.offset(parseInt(query[7], 10));
-        if (query[8]) {
-          this.fetch(parseInt(query[8], 10));
+      if (offset) {
+        this.offset(parseInt(offset, 10));
+        if (fetch) {
+          this.fetch(parseInt(fetch, 10));
         }
       }
     }
@@ -458,7 +463,7 @@ class QueryBuilder extends EventEmitter {
    * @returns {this} this
    * @memberof QueryBuilder
    */
-  public select(s: string | string[] | { [alias: string]: string }): this {
+  public select(s: SelectParameter | SelectParameter[]): this {
 
     // Comma-separated column names.
     if (typeof s === 'string') {
@@ -474,14 +479,16 @@ class QueryBuilder extends EventEmitter {
           // Ignore anything while quotes are open.
           case '\'':
           case '"':
-            if (openQuote === char) {
-              openQuote = '';
-            }
-            else if (
+            if (
               x === 0 ||
               expressions.charAt(x - 1) !== '\\'
             ) {
-              openQuote = char;
+              if (openQuote === char) {
+                openQuote = '';
+              }
+              else if (openQuote === '') {
+                openQuote = char;
+              }
             }
             break;
 
@@ -548,7 +555,9 @@ class QueryBuilder extends EventEmitter {
 
     // Array of column names
     else if (Array.isArray(s)) {
-      this._select.forEach(this.select);
+      s.forEach((value: SelectParameter) => {
+        this.select(value);
+      });
       // this._select = this._select.concat(s);
     }
 

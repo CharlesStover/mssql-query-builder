@@ -1,4 +1,7 @@
 /node_modules
-index.js
-isOrderByClause.js
-sql.js
+/index.d.ts
+/index.js
+/isOrderByClause.d.ts
+/isOrderByClause.js
+/sql.d.ts
+/sql.js
