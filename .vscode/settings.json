@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    ".vscode": true,
+    "node_modules": true,
+    "index.d.ts": true,
+    "index.js": true,
+    "isOrderByClause.d.ts": true,
+    "isOrderByClause.js": true,
+    "sql.d.ts": true,
+    "sql.js": true
+  }
+}

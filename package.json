@@ -1,16 +1,22 @@
 {
   "name": "mssql-query-builder",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "author": "Charles Stover",
+  "bugs": {
+    "url": "https://github.com/CharlesStover/mssql-query-builder/issues"
+  },
+  "dependencies": {
+    "mssql": "^4.1.0"
+  },
   "description": "Dynamically build Microsoft SQL Server queries using JavaScript.",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test.js",
-    "tsc": "tsc index.ts --downlevelIteration --lib ES2015 --target es5"
+  "devDependencies": {
+    "@types/mssql": "^4.0.8",
+    "@types/node": "^10.5.2",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "typescript": "^2.9.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CharlesStover/mssql-query-builder.git"
-  },
+  "homepage": "https://github.com/CharlesStover/mssql-query-builder#readme",
   "keywords": [
     "node",
     "nodejs",
@@ -18,18 +24,15 @@
     "sql",
     "server"
   ],
-  "author": "Charles Stover",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/CharlesStover/mssql-query-builder/issues"
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlesStover/mssql-query-builder.git"
   },
-  "homepage": "https://github.com/CharlesStover/mssql-query-builder#readme",
-  "dependencies": {
-    "mssql": "^4.1.0"    
-  },
-  "devDependencies": {
-    "@types/mssql": "^4.0.8",
-    "@types/node": "^10.5.2",
-    "typescript": "^2.9.2"
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "yarn build",
+    "test": "mocha tests/index.spec.js"
   }
 }
