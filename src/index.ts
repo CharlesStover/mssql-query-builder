@@ -25,6 +25,7 @@ class QueryBuilder extends EventEmitter {
   private _all: boolean;
   private _fetch: number;
   private _from: null | string;
+  private _having: string[];
   private _groupBy: string[];
   private _input: Map<string, { type: ISqlTypeFactoryWithNoParams, value: Input }>;
   private _offset: number;
@@ -49,6 +50,7 @@ class QueryBuilder extends EventEmitter {
     this._fetch = 0;
     this._from = null;
     this._groupBy = [];
+    this._having = [];
     this._input = new Map<string, { type: ISqlTypeFactoryWithNoParams, value: Input }>();
     this._offset = 0;
     this._orderBy = [];
@@ -77,12 +79,13 @@ class QueryBuilder extends EventEmitter {
   // Build the query.
   public buildQuery(): string {
     return (
-      this.buildSelect() +
-      this.buildFrom() +
-      this.buildWhere() +
-      this.buildGroupBy() +
-      this.buildOrderBy() +
-      this.buildOffset() +
+      this._buildSelect() +
+      this._buildFrom() +
+      this._buildWhere() +
+      this._buildGroupBy() +
+      this._buildHaving() +
+      this._buildOrderBy() +
+      this._buildOffset() +
       ';'
     );
   }
@@ -123,7 +126,7 @@ class QueryBuilder extends EventEmitter {
       const q: QueryBuilder = new QueryBuilder()
         .select(d + ' AS "distinct"')
         .from(this._from)
-        .where(this._where)
+        .where(...this._where)
 
         /*
         TODO:
@@ -132,6 +135,7 @@ class QueryBuilder extends EventEmitter {
         Priority: Low, because this works regardless and may be algorithmically complicated, but doing so will speed up the query.
         */
         .groupBy(d)
+        .having(...this._having)
         .orderBy('"distinct"')
         .offset(this._offset)
         .fetch(this._fetch)
@@ -236,13 +240,19 @@ class QueryBuilder extends EventEmitter {
    * @returns {this} this
    * @memberof QueryBuilder
    */
-  public groupBy(g: string | string[]): this {
-    if (typeof g === 'string') {
-      this._groupBy.push(g);
-    }
-    else {
-      this._groupBy = this._groupBy.concat(g);
-    }
+  public groupBy(...groupBy: string[]): this {
+    this._groupBy = this._groupBy.concat(groupBy);
+    return this;
+  }
+
+  /**
+   * Specifies a search condition for a group or an aggregate.
+   * @param {(string | string[])} w search condition
+   * @returns {this} this
+   * @memberof QueryBuilder
+   */
+  public having(...having: string[]): this {
+    this._having = this._having.concat(having);
     return this;
   }
 
@@ -302,16 +312,46 @@ class QueryBuilder extends EventEmitter {
     this._input.set(name, { type, value });
     return this;
   }
-  public inputBit = (value: boolean, name: string): this => this.input(value, name, Bit);
-  public inputBoolean = (value: boolean, name: string): this => this.inputBit(value, name);
-  public inputBuffer = (value: Buffer, name: string): this => this.inputVarBinary(value, name);
-  public inputDate = (value: Date, name: string): this => this.inputDateTime(value, name);
-  public inputDateTime = (value: Date, name: string): this => this.input(value, name, DateTime);
-  public inputInt = (value: number, name: string): this => this.input(value, name, Int);
-  public inputNumber = (value: number, name: string): this => this.inputInt(value, name);
-  public inputNVarChar = (value: string, name: string): this => this.input(value, name, NVarChar);
-  public inputString = (value: string, name: string): this => this.inputNVarChar(value, name);
-  public inputVarBinary = (value: Buffer, name: string): this => this.input(value, name, VarBinary);
+
+  public inputBit(value: boolean, name: string): this {
+    return this.input(value, name, Bit);
+  }
+
+  public inputBoolean(value: boolean, name: string): this {
+    return this.inputBit(value, name);
+  }
+
+  public inputBuffer(value: Buffer, name: string): this {
+    return this.inputVarBinary(value, name);
+  }
+
+  public inputDate(value: Date, name: string): this {
+    return this.inputDateTime(value, name);
+  }
+
+  public inputDateTime(value: Date, name: string): this {
+    return this.input(value, name, DateTime);
+  }
+
+  public inputInt(value: number, name: string): this {
+    return this.input(value, name, Int);
+  }
+
+  public inputNumber(value: number, name: string): this {
+    return this.inputInt(value, name);
+  }
+
+  public inputNVarChar(value: string, name: string): this {
+    return this.input(value, name, NVarChar);
+  }
+
+  public inputString(value: string, name: string): this {
+    return this.inputNVarChar(value, name);
+  }
+
+  public inputVarBinary(value: Buffer, name: string): this {
+    return this.input(value, name, VarBinary);
+  }
 
   /**
    * Specifies the number of rows to skip, before starting to return rows from the query expression.
@@ -382,13 +422,15 @@ class QueryBuilder extends EventEmitter {
         'SELECT(?: (ALL|DISTINCT))?(?: TOP (\\d+))? (.+?)',
         'FROM (.+?)',
         'WHERE (.+?)',
+        'GROUP BY (.+?)',
+        'HAVING (.+?)',
         'ORDER BY (.+?)',
         'OFFSET (\\d+) ROWS?(?: FETCH (?:FIRST|NEXT) (\\d+) ROWS? ONLY)?'
       ) +
       ' ?\;? ?$'
     ));
     if (query) {
-      const [ , all, top, select, from, where, orderBy, offset, fetch ] = query;
+      const [ , all, top, select, from, where, groupBy, having, orderBy, offset, fetch ] = query;
       if (select) {
         switch (all) {
           case 'ALL':
@@ -408,6 +450,12 @@ class QueryBuilder extends EventEmitter {
       }
       if (where) {
         this.where(where);
+      }
+      if (groupBy) {
+        this.groupBy(groupBy);
+      }
+      if (having) {
+        this.having(having);
       }
       if (orderBy) {
         this.orderBy(orderBy);
@@ -445,8 +493,9 @@ class QueryBuilder extends EventEmitter {
       .select('COUNT(*) AS "rows"')
       .all(this._all)
       .from(this._from)
-      .where(this._where)
-      .groupBy(this._groupBy)
+      .where(...this._where)
+      .groupBy(...this._groupBy)
+      .having(...this._having)
       .recordSet(
         (r: Array<{ rows: number }>): number =>
           r[0].rows
@@ -599,13 +648,8 @@ class QueryBuilder extends EventEmitter {
    * @returns {this} this
    * @memberof QueryBuilder
    */
-  public where(w: string | string[]): this {
-    if (typeof w === 'string') {
-      this._where.push(w);
-    }
-    else {
-      this._where = this._where.concat(w);
-    }
+  public where(...where: string[]): this {
+    this._where = this._where.concat(where);
     return this;
   }
 
@@ -630,7 +674,7 @@ class QueryBuilder extends EventEmitter {
    * @returns {string} the FROM clause
    * @memberof QueryBuilder
    */
-  private buildFrom(): string {
+  private _buildFrom(): string {
     if (this._from) {
       return ' FROM ' + this._from;
     }
@@ -643,9 +687,19 @@ class QueryBuilder extends EventEmitter {
    * @returns {string} the GROUP BY clause
    * @memberof QueryBuilder
    */
-  private buildGroupBy(): string {
+  private _buildGroupBy(): string {
     if (this._groupBy.length) {
       return ' GROUP BY ' + this._groupBy.map((expression: string): string => this.getExpressionForAlias(expression)).join(', ');
+    }
+    return '';
+  }
+
+  /**
+   * Constructs the HAVING clause.
+   */
+  private _buildHaving(): string {
+    if (this._having.length) {
+      return ' HAVING ' + this._having.join(' AND ');
     }
     return '';
   }
@@ -656,7 +710,7 @@ class QueryBuilder extends EventEmitter {
    * @returns {string} the OFFSET FETCH clause
    * @memberof QueryBuilder
    */
-  private buildOffset(): string {
+  private _buildOffset(): string {
     if (
       this._offset > 0 ||
       this._fetch > 0
@@ -686,7 +740,7 @@ class QueryBuilder extends EventEmitter {
    * @returns {string} the ORDER BY clause
    * @memberof QueryBuilder
    */
-  private buildOrderBy(): string {
+  private _buildOrderBy(): string {
     if (this._orderBy.length) {
       return ' ORDER BY ' + this._orderBy.join(', ');
     }
@@ -699,7 +753,7 @@ class QueryBuilder extends EventEmitter {
    * @returns {string} the SELECT clause
    * @memberof QueryBuilder
    */
-  private buildSelect(): string {
+  private _buildSelect(): string {
     if (this._select.size) {
       return (
         'SELECT ' + (
@@ -738,7 +792,7 @@ class QueryBuilder extends EventEmitter {
    * @returns {string} the WHERE clause
    * @memberof QueryBuilder
    */
-  private buildWhere(): string {
+  private _buildWhere(): string {
     if (this._where.length) {
       return ' WHERE ' + this._where.join(' AND ');
     }
