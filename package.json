@@ -1,6 +1,6 @@
 {
   "name": "mssql-query-builder",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Charles Stover",
   "bugs": {
     "url": "https://github.com/CharlesStover/mssql-query-builder/issues"
@@ -33,6 +33,6 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "yarn build",
-    "test": "mocha tests/index.spec.js"
+    "test": "mocha tests/*.spec.js"
   }
 }

@@ -103,6 +103,16 @@ describe('mssql-query-builder', () => {
     });
   });
 
+  // HAVING
+  describe('having', () => {
+    it('should support string', () => {
+      expect(qb
+        .having('a')
+        .buildQuery()
+      ).to.equal(' HAVING a;');
+    });
+  });
+
   // input()
   describe('input', () => {
 
@@ -206,7 +216,19 @@ describe('mssql-query-builder', () => {
       ).to.equal(' FROM a;');
     });
 
-    it('should support group by');
+    it('should support group by', () => {
+      expect(qb
+        .query('GROUP BY a')
+        .buildQuery()
+      ).to.equal(' GROUP BY a;');
+    });
+
+    it('should support having', () => {
+      expect(qb
+        .query('HAVING a')
+        .buildQuery()
+      ).to.equal(' HAVING a;');
+    });
 
     it('should support offset', () => {
       expect(qb
@@ -282,12 +304,12 @@ describe('mssql-query-builder', () => {
 
     it('should support an array of strings', () => {
       expect(qb
-        .select([
+        .select(
           'column_name AS "alias1"',
           'expression() AS "alias2"',
           'CONCAT("with quotes", (1 + 1), \'and commas\') AS "alias3"',
           '", \\ , \\" \' " AS "alias4"'
-        ])
+        )
         .buildQuery()
       ).to.equal(
         'SELECT ALL ' +
@@ -298,7 +320,7 @@ describe('mssql-query-builder', () => {
       );
     });
 
-    it('should support object', () => {
+    it('should support aliases', () => {
       expect(qb
         .select({
           alias1: 'column_name',
@@ -349,10 +371,10 @@ describe('mssql-query-builder', () => {
 
     it('should support an array of strings', () => {
       expect(qb
-        .where([
+        .where(
           'a = b',
           'c = d'
-        ])
+        )
         .buildQuery()
       ).to.equal(' WHERE a = b AND c = d;');
     });

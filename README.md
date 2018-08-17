@@ -87,6 +87,9 @@ query.execute().then(
 
   If aggregate functions are included in the SELECT clause's select list, the GROUP BY clause calculates a summary value for each group.
 
+* ### having(...having: string[])
+  Specifies a search condition for a group or an aggregate. HAVING can be used only with the SELECT statement. HAVING is typically used with a GROUP BY clause. When GROUP BY is not used, there is an implicit single, aggregated group.
+
 * ### input(value: Input)
   Inputs a SQL variable and returns its generated variable name.
 
@@ -182,19 +185,17 @@ new QueryBuilder()
   );
 ```
 
-* ### select(s: string)
-  Specifies a column to be returned by the query. `query.select('column_name')`
+* ### select(...s: Array<Aliases | string>)
+  Specifies the columns to be returned by the query.
+  
+  As strings, `query.select('column_name')` or `query.select('column1_name', 'column2_name')`.
 
-* ### select(s: string[])
-  Specifies the columns to be returned by the query. `query.select([ 'column1_name', 'column2_name' ])`
-
-* ### select(s: Object)
-  Specifies the columns to be returned by the query, where the object keys are column aliases.
+  To use aliases, pass an object where the object keys are column aliases and values are their expressions.
 
 ```JS
 query.select({
   column: 'column',                                        // no alias
-  expression: 'MAX(column1 + column2, column3 / column4)', // alias is expression
+  expression: 'MAX(column1 + column2, column3 / column4)', // alias is `expression`
   Two: '1 + 1'
 });
 ```
@@ -231,10 +232,7 @@ console.log(query.time());
 
   The set of rows can be either a number, or a percent of the rows.
 
-* ### where(condition: string)
-  Specifies a search condition to restrict the rows returned.
-
-* ### where(conditions: string[])
+* ### where(...conditions: string[])
   Specifies search conditions to restrict the rows returned.
 
 * ### whereIn(columnOrExpression: string, input: Input | Input[])

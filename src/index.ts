@@ -1,9 +1,8 @@
 import { EventEmitter } from 'events';
 import { Bit, config, DateTime, Int, IResult, ISqlTypeFactoryWithNoParams, NVarChar, Request, VarBinary } from 'mssql';
+import getAliases, { Aliases } from './alias';
 import isOrderByClause from './isOrderByClause';
 import { sqlRequest } from './sql';
-
-type Alias = { [alias: string]: string };
 
 export type Input = boolean | number | string | Buffer | Date;
 
@@ -14,11 +13,15 @@ export interface OrderBy {
 
 export type RecordSet<Obj extends object = { [key: string]: number | string }, Result = any> = number | ((recordset: Obj[]) => Result);
 
-type SelectParameter = Alias | string;
-
 const clauses = (...c: string[]): string => {
   return c.map((a: string): string => '(?:(?:^| )?' + a + ')?').join('');
 };
+
+const objectEntries = <T>(obj: { [key: string]: T }): [ string, T ][] =>
+  Object.keys(obj).map(
+    (key: string): [ string, T ] =>
+      [ key, obj[key] ]
+  );
 
 class QueryBuilder extends EventEmitter {
   public static default: typeof QueryBuilder = QueryBuilder;
@@ -512,110 +515,17 @@ class QueryBuilder extends EventEmitter {
    * @returns {this} this
    * @memberof QueryBuilder
    */
-  public select(s: SelectParameter | SelectParameter[]): this {
-
-    // Comma-separated column names.
-    if (typeof s === 'string') {
-
-      // Loop each character.
-      let expressions: string = s;
-      let openParentheses = 0;
-      let openQuote = '';
-      for (let x = 0; x <= expressions.length; ++x) {
-        const char: string = expressions.charAt(x);
-        switch (char) {
-
-          // Ignore anything while quotes are open.
-          case '\'':
-          case '"':
-            if (
-              x === 0 ||
-              expressions.charAt(x - 1) !== '\\'
-            ) {
-              if (openQuote === char) {
-                openQuote = '';
-              }
-              else if (openQuote === '') {
-                openQuote = char;
-              }
-            }
-            break;
-
-          // Ignore parameters of functions.
-          case '(':
-            if (openQuote === '') {
-              ++openParentheses;
-            }
-            break;
-          case ')':
-            if (openQuote === '') {
-              --openParentheses;
-            }
-            break;
-
-          // Find expression delimeters.
-          // Find the " AS " in "expression AS alias"
-          case ',':
-          case ' ':
-          case '':
-            if (
-              openParentheses === 0 &&
-              openQuote === ''
-            ) {
-
-              // Expression delimeter.
-              if (
-                char === ',' ||
-                char === ''
-              ) {
-
-                // Add this expression to the SELECT clause
-                const expression: string = expressions.substring(0, x).trim();
-                this._select.set(expression, expression);
-
-                // Reset the expression finder.
-                expressions = expressions.substring(x + 1);
-                x = 0;
-              }
-
-              // Expression alias.
-              else if (expressions.substring(x, x + 4).toUpperCase() === ' AS ') {
-
-                // Add this expression to the SELECT clause.
-                const expression: null | RegExpMatchArray = expressions.substring(x + 4).match(/^\s*(?:\"([^\"]*)\"|([\w\d]+))/i);
-                if (expression) {
-                  const alias: string = expression[1] || expression[2];
-                  this._select.set(alias, expressions.substring(0, x).trim());
-
-                  // Reset the expression finder.
-                  expressions = expressions.substring(x + 4 + alias.length + (expression[1] ? 2 : 0)).replace(/^\s*\,\s*/, '');
-                  x = 0;
-                }
-                else {
-                  console.error(expressions);
-                  throw new Error('Invalid column alias detected in SELECT clause.');
-                }
-              }
-            }
-            break;
-        }
+  public select(...select: Array<Aliases | string>): this {
+    for (const column of select) {
+      const entries: [ string, string ][] = objectEntries(
+        typeof column === 'string' ?
+          getAliases(column) :
+          column
+      );
+      for (const [ alias, expression ] of entries) {
+        this._select.set(alias, expression);
       }
-    }
-
-    // Array of column names
-    else if (Array.isArray(s)) {
-      s.forEach((value: SelectParameter) => {
-        this.select(value);
-      });
-      // this._select = this._select.concat(s);
-    }
-
-    // Objects { [result_name]: 'Function(column)' }
-    else {
-      for (const key of Object.keys(s)) {
-        this._select.set(key, s[key]);
-      }
-    }
+    };
     return this;
   }
 
