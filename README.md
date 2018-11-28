@@ -52,54 +52,66 @@ query.execute().then(
 
 ## Methods
 
-* ### all(all?: boolean)
-  Specifies that duplicate rows can appear in the result set.
+### all(all?: boolean)
 
-  This is the opposite of `distinct(boolean)`.
+Specifies that duplicate rows can appear in the result set.
 
-* ### distinct(distinct?: boolean)
-  Specifies that only unique rows can appear in the result set.
+This is the opposite of `distinct(boolean)`.
 
-  Null values are considered equal for the purposes of the DISTINCT keyword.
+### distinct(distinct?: boolean)
 
-* ### distinct(selectItem: string)
-  Returns all distinct values of the single select item.
+Specifies that only unique rows can appear in the result set.
 
-* ### distinct(selectList: string[])
-  Returns all distinct values of the select list.
+Null values are considered equal for the purposes of the DISTINCT keyword.
 
-* ### execute()
-  Executes the query as built thus far. Returns a Promise of a result.
+### distinct(selectItem: string)
 
-* ### execute(query: string)
-  Executes the query string provided. Returns a Promise of a result.
+Returns all distinct values of the single select item.
 
-* ### fetch(n: number)
-  Specifies the number of rows to return, after processing the OFFSET clause.
+### distinct(selectList: string[])
 
-  The argument for the FETCH clause can be an integer or expression that is greater than or equal to one.
+Returns all distinct values of the select list.
 
-* ### from(table: string)
-  Specifies the tables from which to retrieve rows.
+### execute()
 
-* ### groupBy(column: string)
-  Specifies the groups (equivalence classes) that output rows are to be placed in.
+Executes the query as built thus far. Returns a Promise of a result.
 
-  If aggregate functions are included in the SELECT clause's select list, the GROUP BY clause calculates a summary value for each group.
+### execute(query: string)
 
-* ### having(...having: string[])
-  Specifies a search condition for a group or an aggregate. HAVING can be used only with the SELECT statement. HAVING is typically used with a GROUP BY clause. When GROUP BY is not used, there is an implicit single, aggregated group.
+Executes the query string provided. Returns a Promise of a result.
 
-* ### input(value: Input)
-  Inputs a SQL variable and returns its generated variable name.
+### fetch(n: number)
+
+Specifies the number of rows to return, after processing the OFFSET clause.
+
+The argument for the FETCH clause can be an integer or expression that is greater than or equal to one.
+
+### from(table: string)
+
+Specifies the tables from which to retrieve rows.
+
+### groupBy(column: string)
+
+Specifies the groups (equivalence classes) that output rows are to be placed in.
+
+If aggregate functions are included in the SELECT clause's select list, the GROUP BY clause calculates a summary value for each group.
+
+### having(...having: string[])
+
+Specifies a search condition for a group or an aggregate. HAVING can be used only with the SELECT statement. HAVING is typically used with a GROUP BY clause. When GROUP BY is not used, there is an implicit single, aggregated group.
+
+### input(value: Input)
+
+Inputs a SQL variable and returns its generated variable name.
 
 ```JS
 const myVar = query.input('Bob');
 query.where('name = ' + myVar); // WHERE name = @__QB_INPUT_1__
 ```
 
-* ### input(value: Input, name: string, type: ISqlTypeFactoryWithNoParams)
-  Inputs a SQL variable.
+### input(value: Input, name: string, type: ISqlTypeFactoryWithNoParams)
+
+Inputs a SQL variable.
 
 ```JS
 query
@@ -107,38 +119,45 @@ query
   .input('password', 'userPass', NVarChar)
 ```
 
-  Supported `Input` types and their respective `ISqlTypeFactoryWithNoParams` types are are boolean (Bit), number (Int), string (NVarChar), Buffer (VarBinary), and Date (DateTime).
+Supported `Input` types and their respective `ISqlTypeFactoryWithNoParams` types are are boolean (Bit), number (Int), string (NVarChar), Buffer (VarBinary), and Date (DateTime).
 
-  Omitting the `ISqlTypeFactoryWithNoParams` type will result in the QueryBuilder determining the type on its own.
+Omitting the `ISqlTypeFactoryWithNoParams` type will result in the QueryBuilder determining the type on its own.
 
-* ### inputBit and inputBoolean(value: boolean, name: string)
-  Inputs a boolean SQL variable. Shorthand for `input(value, name, Bit)`.
+### inputBit and inputBoolean(value: boolean, name: string)
 
-* ### inputBuffer and inputVarBinary(value: Buffer, name: string)
-  Inputs a Buffer SQL variable. Shorthand for `input(value, name, VarBinary)`.
+Inputs a boolean SQL variable. Shorthand for `input(value, name, Bit)`.
 
-* ### inputDate and inputDateTime(value: Date, name: string)
-  Inputs a Date SQL variable. Shorthand for `input(value, name, DateTime)`.
+### inputBuffer and inputVarBinary(value: Buffer, name: string)
 
-* ### inputInt and inputNumber(value: number, name: string)
-  Inputs a number SQL variable. Shorthand for `input(value, name, Int)`.
+Inputs a Buffer SQL variable. Shorthand for `input(value, name, VarBinary)`.
 
-* ### inputNVarChar and inputString(value: string, name: string)
-  Inputs a string SQL variable. Shorthand for `input(value, name, NVarChar)`.
+### inputDate and inputDateTime(value: Date, name: string)
 
-* ### offset(n: number)
-  Specifies the number of rows to skip, before starting to return rows from the query expression.
+Inputs a Date SQL variable. Shorthand for `input(value, name, DateTime)`.
 
-  The argument for the OFFSET clause can be an integer or expression that is greater than or equal to zero.
+### inputInt and inputNumber(value: number, name: string)
 
-* ### orderBy(o: string | OrderBy | Array<string | OrderBy>)
-  Specifies the sort order for the result set.
+Inputs a number SQL variable. Shorthand for `input(value, name, Int)`.
 
-  The ORDER BY clause is not valid in subqueries.
+### inputNVarChar and inputString(value: string, name: string)
 
-  You also have an option to fetch only a window or page of results from the resultset using OFFSET-FETCH clause.
+Inputs a string SQL variable. Shorthand for `input(value, name, NVarChar)`.
 
-  You may pass a string literal, an object (`{ order: 'ASC' | 'DESC', by: 'string literal' }`), or an array that contains any number of either.
+### offset(n: number)
+
+Specifies the number of rows to skip, before starting to return rows from the query expression.
+
+The argument for the OFFSET clause can be an integer or expression that is greater than or equal to zero.
+
+### orderBy(o: string | OrderBy | Array<string | OrderBy>)
+
+Specifies the sort order for the result set.
+
+The ORDER BY clause is not valid in subqueries.
+
+You also have an option to fetch only a window or page of results from the resultset using OFFSET-FETCH clause.
+
+You may pass a string literal, an object (`{ order: 'ASC' | 'DESC', by: 'string literal' }`), or an array that contains any number of either.
 
 ```JS
 query.orderBy('column_name');
@@ -150,10 +169,11 @@ query.orderBy([
 ]);
 ```
 
-* ### query(q: string)
-  Convert a string into a QueryBuilder object.
+### query(q: string)
 
-  Sometimes it's easier to start your query building process with an incomplete SQL query instead of building it from scratch.
+Convert a string into a QueryBuilder object.
+
+Sometimes it's easier to start your query building process with an incomplete SQL query instead of building it from scratch.
 
 ```JS
 const query1 = new QueryBuilder().select('a').where('b = 1');
@@ -162,14 +182,17 @@ query1.from('c');
 query2.from('d');
 ```
 
-* ### recordSet(set: number)
-  Returns the given record set (default `0`).
+### recordSet(set: number)
 
-* ### recordSet(f: function)
-  Passes the query result through the given function before returning it.
+Returns the given record set (default `0`).
 
-* ### rowCount()
-  Returns the total possible row count for a query.
+### recordSet(f: function)
+
+Passes the query result through the given function before returning it.
+
+### rowCount()
+
+Returns the total possible row count for a query.
 
 ```JS
 const MY_VALUE = 1;
@@ -185,12 +208,13 @@ new QueryBuilder()
   );
 ```
 
-* ### select(...s: Array<Aliases | string>)
-  Specifies the columns to be returned by the query.
-  
-  As strings, `query.select('column_name')` or `query.select('column1_name', 'column2_name')`.
+### select(...s: Array<Aliases | string>)
 
-  To use aliases, pass an object where the object keys are column aliases and values are their expressions.
+Specifies the columns to be returned by the query.
+  
+As strings, `query.select('column_name')` or `query.select('column1_name', 'column2_name')`.
+
+To use aliases, pass an object where the object keys are column aliases and values are their expressions.
 
 ```JS
 query.select({
@@ -200,12 +224,13 @@ query.select({
 });
 ```
 
-* ### time()
-  Time it took to execute the query.
+### time()
 
-  Returns 0 if the query has no begun executing.
+Time it took to execute the query.
 
-  Returns negative if the query is still executing.
+Returns 0 if the query has no begun executing.
+
+Returns negative if the query is still executing.
 
 ```JS
 // Zero because the query has not begun to execute:
@@ -227,16 +252,19 @@ query
 console.log(query.time());
 ```
 
-* ### top(n: number)
-  Specifies that only the first set of rows will be returned from the query result.
+### top(n: number)
 
-  The set of rows can be either a number, or a percent of the rows.
+Specifies that only the first set of rows will be returned from the query result.
 
-* ### where(...conditions: string[])
-  Specifies search conditions to restrict the rows returned.
+The set of rows can be either a number, or a percent of the rows.
 
-* ### whereIn(columnOrExpression: string, input: Input | Input[])
-  Species a search condition to restrict the rows returned using an Array. To see supported Input types, check the documentation for the `input()` method.
+### where(...conditions: string[])
+
+Specifies search conditions to restrict the rows returned.
+
+### whereIn(columnOrExpression: string, input: Input | Input[])
+
+Species a search condition to restrict the rows returned using an Array. To see supported Input types, check the documentation for the `input()` method.
 
 ```JS
 // Select all users who are 3 or 4 feet tall.
