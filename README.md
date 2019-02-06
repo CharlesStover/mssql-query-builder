@@ -1,17 +1,20 @@
-# mssql-query-builder
+# mssql-query-builder [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Dynamically%20build%20Microsoft%20SQL%20Server%20queries%20in%20JavaScript,%20using%20the%20NPM%20package%20mssql-query-builder!&url=https://github.com/CharlesStover/mssql-query-builder&via=CharlesStover&hashtags=javascript,sql,sqlserver,typescript,webdev,webdevelopment)
+
 Dynamically build Microsoft SQL Server queries using JavaScript.
 
-[![package](https://img.shields.io/github/package-json/v/CharlesStover/mssql-query-builder.svg)](https://github.com/CharlesStover/mssql-query-builder/)
+[![package](https://img.shields.io/npm/v/mssql-query-builder.svg)](https://github.com/CharlesStover/mssql-query-builder/)
 [![build](https://travis-ci.com/CharlesStover/mssql-query-builder.svg)](https://travis-ci.com/CharlesStover/mssql-query-builder/)
 [![downloads](https://img.shields.io/npm/dt/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
 [![minified size](https://img.shields.io/bundlephobia/min/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
 
 ## Install
+
 * `npm install mssql-query-builder --save` or
 * `yarn add mssql-query-builder`
 
 ## Use
+
 Note: All methods can be chained together. Each method call returns the original QueryBuilder instance.
 
 ```JS
