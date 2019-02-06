@@ -1,4 +1,4 @@
-# mssql-query-builder [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Dynamically%20build%20Microsoft%20SQL%20Server%20queries%20in%20JavaScript,%20using%20the%20NPM%20package%20mssql-query-builder!&url=https://github.com/CharlesStover/mssql-query-builder&via=CharlesStover&hashtags=javascript,sql,sqlserver,typescript,webdev,webdevelopment)
+# SQLServer Query Builder [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Dynamically%20build%20Microsoft%20SQL%20Server%20queries%20in%20JavaScript,%20using%20the%20NPM%20package%20mssql-query-builder!&url=https://github.com/CharlesStover/mssql-query-builder&via=CharlesStover&hashtags=javascript,sql,sqlserver,typescript,webdev,webdevelopment)
 
 Dynamically build Microsoft SQL Server queries using JavaScript.
 
