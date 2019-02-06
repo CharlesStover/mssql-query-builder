@@ -2,7 +2,7 @@
 
 Dynamically build Microsoft SQL Server queries using JavaScript.
 
-[![version](https://img.shields.io/npm/v/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder/)
+[![version](https://img.shields.io/npm/v/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
 [![minified size](https://img.shields.io/bundlephobia/min/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
 [![downloads](https://img.shields.io/npm/dt/mssql-query-builder.svg)](https://www.npmjs.com/package/mssql-query-builder)
