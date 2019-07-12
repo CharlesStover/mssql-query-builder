@@ -6,7 +6,7 @@
     "url": "https://github.com/CharlesStover/mssql-query-builder/issues"
   },
   "dependencies": {
-    "mssql": "^4.1.0"
+    "mssql": "^5.1.0"
   },
   "description": "Dynamically build Microsoft SQL Server queries using JavaScript.",
   "devDependencies": {
