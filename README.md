@@ -276,3 +276,9 @@ query.select('username').from('users').whereIn('FLOOR(height / 12)', [ 3, 4 ]);
 // Select all users who are named Bob or Tim.
 query.select('username').from('users').whereIn('name', [ 'Bob', 'Tim' ]);
 ```
+
+## Sponsor 💗
+
+If you are a fan of this project, you may
+[become a sponsor](https://github.com/sponsors/CharlesStover)
+via GitHub's Sponsors Program.
